@@ -1,6 +1,7 @@
 package com.to_do.tarefas.runner;
 
 import ch.qos.logback.core.joran.spi.HttpUtil;
+import com.to_do.tarefas.service.ChatGPTService;
 import com.to_do.tarefas.service.TarefaService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -14,10 +15,12 @@ import java.util.Scanner;
 public class AppRunner implements CommandLineRunner {
 
     private final TarefaService tarefaService;
+    private final ChatGPTService chatGPTService;
     private final Menus menu = new Menus();
 
-    public AppRunner(TarefaService tarefaService) {
+    public AppRunner(TarefaService tarefaService, ChatGPTService chatGPTService) {
         this.tarefaService = tarefaService;
+        this.chatGPTService = chatGPTService;
     }
 
     @Override
@@ -60,6 +63,16 @@ public class AppRunner implements CommandLineRunner {
                             System.out.println("Tarefa removida!");
                         } else {
                             System.out.println("Tarefa não encontrada.");
+                        }
+                    }
+                    case 5 -> {
+                        try{
+                            menu.invocaAjuda();
+                            String pergunta = scanner.nextLine();
+                            String resposta = chatGPTService.perguntar(pergunta);
+                            System.out.println(resposta);
+                        } catch (Exception e){
+                            System.out.println("Erro ao consultar a IA.");
                         }
                     }
                     case 0 -> System.out.println("Finalizando programa...");

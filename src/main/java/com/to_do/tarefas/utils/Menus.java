@@ -14,9 +14,8 @@ public class Menus {
 
     // realizar integracao com chatGPT
     public void invocaAjuda() {
-        System.out.println("1. O que devo escrever aqui?");
-        System.out.println("2. Como definir minhas metas?");
-        System.out.println("3. O que fazer se não conseguir cumprir minha meta?");
+        System.out.println("-------------- MENU AJUDA --------------");
+        System.out.printf("Olá! Como posso te ajudar?");
     }
 
 
