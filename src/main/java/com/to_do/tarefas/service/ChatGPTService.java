@@ -5,6 +5,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import org.json.JSONObject;
+import reactor.util.retry.Retry;
+
+import java.time.Duration;
 
 @Service
 public class ChatGPTService {
@@ -13,11 +16,11 @@ public class ChatGPTService {
 
     @Value("${openai.api.key}")
     private String apiKey;
-    @Value("${baseu.url.openai}")
-    private String baseUrlOpenAI;
+    @Value("${base.url.openai}")
+    private String baseUrlOpenAi;
 
     public ChatGPTService(WebClient.Builder webClientBuilder) {
-        this.webClient = webClientBuilder.baseUrl("baseUrlOpenAI").build();
+        this.webClient = webClientBuilder.baseUrl("baseUrlOpenAi").build();
     }
 
     public String perguntar(String pergunta) {
@@ -42,6 +45,7 @@ public class ChatGPTService {
                             .getJSONObject("message")
                             .getString("content");
                 })
-                .block(); // como é app console, pode usar bloqueante
+                .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(10))) // tenta 3x com 10s de espera
+                .block();
     }
 }
